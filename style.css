@@ -1,0 +1,23 @@
+* {
+    font-family: Consolas
+}
+
+h1 {
+    text-align: center;
+}
+
+.container {
+    width: 50%;
+    margin: 0 auto;
+}
+
+input {
+    width: 300px;
+    font-size: 20px;
+}
+
+#results {
+    width: 50%;
+    margin: 0 auto;
+
+}
