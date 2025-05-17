@@ -1,31 +1,32 @@
 const phrases = [
-    "Szybki brązowy lis",
-    "Czerwony samochód na parkingu",
-    "Zimowy wieczór przy kominku",
-    "Książka o sztuce nowoczesnej",
-    "Wakacje nad morzem",
-    "Przepis na ciasto czekoladowe",
-    "Muzyka relaksacyjna na wieczór",
-    "Podróż do egzotycznych krajów",
-    "Zielona herbata z cytryną",
-    "Film akcji z ulubionym aktorem",
-    "Poranna kawa z mlekiem",
-    "Spacer po parku wiosną",
-    "Nowe technologie w edukacji",
-    "Sztuka gotowania na parze",
-    "Zabawy dla dzieci w ogrodzie",
-    "Kreatywne pomysły na prezent",
-    "Wydarzenia kulturalne w mieście",
-    "Trening na świeżym powietrzu",
-    "Ogród pełen kwiatów",
-    "Cytaty motywacyjne na każdy dzień"
+    "szybki brązowy lis",
+    "czerwony samochód na parkingu",
+    "zimowy wieczór przy kominku",
+    "książka o sztuce nowoczesnej",
+    "wakacje nad morzem",
+    "przepis na ciasto czekoladowe",
+    "muzyka relaksacyjna na wieczór",
+    "podróż do egzotycznych krajów",
+    "zielona herbata z cytryną",
+    "film akcji z ulubionym aktorem",
+    "poranna kawa z mlekiem",
+    "spacer po parku wiosną",
+    "nowe technologie w edukacji",
+    "sztuka gotowania na parze",
+    "zabawy dla dzieci w ogrodzie",
+    "kreatywne pomysły na prezent",
+    "wydarzenia kulturalne w mieście",
+    "trening na świeżym powietrzu",
+    "ogród pełen kwiatów",
+    "cytaty motywacyjne na każdy dzień"
 ];
-
-// const phrases = ["/test", "/kot", "/pies", "/ciasto", "/pierogi"]
 
 document.addEventListener("DOMContentLoaded", function () {
     for (let phrase of phrases) {
-        document.getElementById("results").innerHTML += `<p>${phrase}</p>`
+        for (let resultBox of document.querySelectorAll(".results")) {
+            resultBox.innerHTML += `<p>${phrase}</p>`
+        }
+        
     }
 })
 
@@ -65,6 +66,36 @@ function levenshteinDistance(a, b) {
     return matrix[a.length][b.length]
 }
 
+function termFrequency(term, doc) {
+    // calculate TF
+    let t_count = 0;
+    let doc_words = doc.split(" ");
+    for (let word of doc_words) {
+        if (term == word) {
+            t_count++;
+        }
+    }
+    return t_count / doc_words.length;
+
+}
+
+function inverseDocumentFrequency(term, docs) {
+    // calculate IDF
+    let doc_count = docs.length;
+    let docs_containing_term = 0;
+
+    for (let doc of docs) {
+        let doc_words = doc.split(" ")
+        for (let word of doc_words) {
+            docs_containing_term++;
+            break;
+        }
+    }
+
+    return doc_count / docs_containing_term;
+
+}
+
 function search(query, list, algorithm) {
     if (algorithm == "levenshtein") {
         let calculatedDistances = []
@@ -72,20 +103,49 @@ function search(query, list, algorithm) {
         for (let elem of list) {
             similarity = 1 - levenshteinDistance(elem, query) / Math.max(elem.length, query.length)
             calculatedDistances.push({
-                "phrase": elem,
-                "similarity": similarity
+                phrase: elem,
+                similarity: similarity
             })
         }
 
         return calculatedDistances.sort((a, b) => b.similarity - a.similarity)
+    } else if (algorithm == "tf-idf") {
+        let calculatedScores = [];
+        let lowerList = []
+        query = query.toLowerCase()
+        for (let elem of list) {
+            lowerList.push(elem.toLowerCase())
+        }
+
+        for (let elem of lowerList) {
+            similarity = 0
+            for (let word of query.split(" ")) {
+                similarity += termFrequency(word, elem) * inverseDocumentFrequency(word, lowerList)
+            }
+
+            calculatedScores.push({
+                phrase: elem,
+                similarity: similarity
+            })
+        }
+
+        return calculatedScores.sort((a, b) => b.similarity - a.similarity)
     }
 
 }
 
-document.getElementById("query").addEventListener("input", function () {
-    document.getElementById("results").innerHTML = ""
+document.querySelector(".levenshtein .query").addEventListener("input", function () {
+    document.querySelector(".levenshtein .results").innerHTML = ""
 
     for (let phrase of search(this.value, phrases, "levenshtein")) {
-        document.getElementById("results").innerHTML += `<p>${phrase.phrase} [${phrase.similarity}]</p>`
+        document.querySelector(".levenshtein .results").innerHTML += `<p>${phrase.phrase} [${phrase.similarity}]</p>`
+    }
+})
+
+document.querySelector(".tf-idf .query").addEventListener("input", function () {
+    document.querySelector(".tf-idf .results").innerHTML = ""
+
+    for (let phrase of search(this.value, phrases, "tf-idf")) {
+        document.querySelector(".tf-idf .results").innerHTML += `<p>${phrase.phrase} [${phrase.similarity}]</p>`
     }
 })

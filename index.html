@@ -4,21 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Algorytm Levenshteina</title>
+    <title>Search Algorithms</title>
     <script src="./script.js" defer></script>
     <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
-    <h1>Algorytm Levenshteina</h1>
+    <h1>Search Algorithms</h1>
 
     <div class="container">
-        <p>Szukaj...</p>
-        <input type="text" id="query">
-    </div>
-    <div id="results">
+        <div class="algorithm levenshtein">
+            <h2>levenshtein distance based search</h2>
+            <input type="text" class="query" placeholder="search...">
+            <div class="results">
+
+            </div>
+        </div>
+
+        <div class="algorithm tf-idf">
+            <h2>TF-IDF based search</h2>
+            <input type="text" class="query" placeholder="search...">
+            <div class="results">
+
+            </div>
+        </div>
 
     </div>
+
 </body>
 
 </html>

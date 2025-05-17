@@ -1,23 +1,61 @@
 * {
-    font-family: Consolas
+    font-family: Consolas;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100vh;
+    margin: 0;
+}
+
+body {
+    background-color: rgb(15, 17, 29);
+
 }
 
 h1 {
     text-align: center;
+    color: rgb(239, 239, 239);
+
 }
 
 .container {
+    display: flex;
+    height: 90%;
+    color: rgb(239, 239, 239);
+}
+
+.algorithm {
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgb(24, 27, 46);
+    height: 100%;
     width: 50%;
-    margin: 0 auto;
 }
 
 input {
-    width: 300px;
+    width: 100%;
+    border: none;
+    background-color: rgb(15, 17, 29);
+    color: white;
+    border-radius: 5px;
     font-size: 20px;
+    outline: none;
+    padding: 5px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    transition: border 100ms ease;
 }
 
-#results {
-    width: 50%;
-    margin: 0 auto;
-
+.results p {
+    background-color: rgb(14, 41, 85);
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
 }
