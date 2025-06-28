@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
         for (let resultBox of document.querySelectorAll(".results")) {
             resultBox.innerHTML += `<p>${phrase}</p>`
         }
-        
+
     }
 })
 
@@ -130,6 +130,53 @@ function search(query, list, algorithm) {
         }
 
         return calculatedScores.sort((a, b) => b.similarity - a.similarity)
+    } else if (algorithm == "tf-idf-levenshtein") {
+        let lowerList = [];
+        let calculatedScores = [];
+
+        for (let elem of list) {
+            lowerList.push(elem.toLowerCase())
+        }
+
+        // creating known words dictionary
+        let knownWords = [];
+        for (let elem of lowerList) {
+            for (let word of elem.split(" ")) {
+                if (word.length > 1) {
+                    knownWords.push(word)
+                }
+            }
+        }
+
+        for (let elem of lowerList) {
+            similarity = 0;
+            for (let word of query.split(" ")) {
+                prevDistance = -1;
+                correctWord = "";
+                // checking what is the correct word
+                for (let knownWord of knownWords) {
+                    // starting distance
+                    if (prevDistance == -1) {
+                        prevDistance = levenshteinDistance(word, knownWord)
+                        correctWord = knownWord
+                    } else {
+                        if (levenshteinDistance(word, knownWord) < prevDistance) {
+                            prevDistance = levenshteinDistance(word, knownWord)
+                            correctWord = knownWord
+                        }
+                    }
+                }
+                // calculating levenshtein distance with correct word
+                similarity += termFrequency(correctWord, elem) * inverseDocumentFrequency(correctWord, lowerList)
+            }
+
+            calculatedScores.push({
+                phrase: elem,
+                similarity: similarity
+            })
+        }
+        return calculatedScores.sort((a, b) => b.similarity - a.similarity)
+
     }
 
 }
@@ -147,5 +194,13 @@ document.querySelector(".tf-idf .query").addEventListener("input", function () {
 
     for (let phrase of search(this.value, phrases, "tf-idf")) {
         document.querySelector(".tf-idf .results").innerHTML += `<p>${phrase.phrase} [${phrase.similarity}]</p>`
+    }
+})
+
+document.querySelector(".tf-idf-levenshtein .query").addEventListener("input", function () {
+    document.querySelector(".tf-idf-levenshtein .results").innerHTML = ""
+
+    for (let phrase of search(this.value, phrases, "tf-idf-levenshtein")) {
+        document.querySelector(".tf-idf-levenshtein .results").innerHTML += `<p>${phrase.phrase} [${phrase.similarity}]</p>`
     }
 })
