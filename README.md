@@ -4,3 +4,4 @@ I was bored so i started playing with seach algorithms. For example levenshtein 
 ### implemented:
 - [x] levenshtein
 - [x] tf-idf
+- [x] tf-idf + levenshtein
