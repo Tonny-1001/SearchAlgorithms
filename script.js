@@ -87,12 +87,19 @@ function inverseDocumentFrequency(term, docs) {
     for (let doc of docs) {
         let doc_words = doc.split(" ")
         for (let word of doc_words) {
-            docs_containing_term++;
-            break;
+            if (word.toLowerCase() == term.toLowerCase()) {
+                docs_containing_term++;
+                break;
+            }
+
         }
     }
 
-    return doc_count / docs_containing_term;
+    if (docs_containing_term != 0) {
+        return doc_count / docs_containing_term;
+    } else {
+        return 0
+    }
 
 }
 
@@ -142,7 +149,7 @@ function search(query, list, algorithm) {
         let knownWords = [];
         for (let elem of lowerList) {
             for (let word of elem.split(" ")) {
-                if (word.length > 1) {
+                if (word.length > 2) {
                     knownWords.push(word)
                 }
             }
